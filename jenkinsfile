@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
+        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/gehlotdeep/Terraform_instance.git', branch: "deepak"
+            }
+        }
+
+        stage('Print Environment Variables') {
+            steps {
+                script {
+                    sh 'echo $AWS_ACCESS_KEY_ID'
+                    sh 'echo $AWS_SECRET_ACCESS_KEY'
+                }
+            }
+        }
+
+        stage('Init Terraform') {
+            steps {
+                sh 'terraform init'
+            }
+        }
+
+        stage('Apply Terraform') {
+            steps {
+                sh 'terraform apply -auto-approve'
+            }
+        }
+    }
+}
+
+
