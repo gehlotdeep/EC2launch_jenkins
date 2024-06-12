@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/gehlotdeep/Terraform_instance.git', branch: "deepak"
+                git url: 'https://github.com/gehlotdeep/EC2launch_jenkins.git', branch: "module"
             }
         }
 
