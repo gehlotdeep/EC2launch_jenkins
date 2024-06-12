@@ -56,7 +56,7 @@ terraform {
     bucket         = "deepakgehlot1"
     region         = "us-west-2"
     key            = "resource.tf"
-    dynamodb_table = "new-table"
+   // dynamodb_table = "new-table"
   }
 }
 
@@ -70,3 +70,35 @@ variable "AWS_SECRET_ACCESS_KEY" {
   type        = string
 }
 
+variable "table_name" {
+  description = "The name of the DynamoDB table"
+  default     = "new-table"
+}
+
+variable "billing_mode" {
+  description = "The billing mode for the DynamoDB table"
+  default     = "PAY_PER_REQUEST"
+}
+
+variable "hash_key" {
+  description = "The partition key for the DynamoDB table"
+  default     = "LockID"
+}
+
+variable "range_key" {
+  description = "The sort key for the DynamoDB table"
+  default     = "sort_key"
+}
+
+variable "ttl_enabled" {
+  description = "Enable Time to Live (TTL) for the DynamoDB table"
+  default     = false
+}
+
+variable "tag" {
+  description = "Tags for the DynamoDB table"
+  default     = {
+    Name        = "example-table"
+    Environment = "production"
+  }
+}

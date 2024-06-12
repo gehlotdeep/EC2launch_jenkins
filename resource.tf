@@ -202,6 +202,27 @@ resource "aws_security_group" "my_security_group" {
   }
 }
 
+resource "aws_dynamodb_table" "example" {
+  name           = var.table_name
+  billing_mode   = var.billing_mode
 
+  attribute {
+    name = var.hash_key
+    type = "S"
+  }
 
+  attribute {
+    name = var.range_key
+    type = "S"
+  }
 
+  hash_key  = var.hash_key
+  range_key = var.range_key
+
+  ttl {
+    attribute_name = "TimeToLive"
+    enabled        = var.ttl_enabled
+  }
+
+  tags = var.tag
+}
