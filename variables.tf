@@ -54,7 +54,7 @@ variable "my_vpc" {
 terraform {
   backend "s3" {
     bucket         = "deepakgehlot1"
-    region         = "eu-west-2"
+    region         = "us-west-2"
     key            = "resource.tf"
     dynamodb_table = "new-table"
   }
