@@ -53,12 +53,13 @@ variable "my_vpc" {
 
 terraform {
   backend "s3" {
-    bucket         = "deepakgehlot1"
+    bucket         = "ayushjoshi"
     region         = "us-west-2"
     key            = "resource.tf"
-   // dynamodb_table = "new-table"
+    dynamodb_table = "new-table"
   }
 }
+
 
 variable "AWS_ACCESS_KEY_ID" {
   description = "The AWS access key ID"
@@ -69,7 +70,7 @@ variable "AWS_SECRET_ACCESS_KEY" {
   description = "The AWS secret access key"
   type        = string
 }
-
+/*
 variable "table_name" {
   description = "The name of the DynamoDB table"
   default     = "new-table"
@@ -102,3 +103,5 @@ variable "tag" {
     Environment = "production"
   }
 }
+
+*/

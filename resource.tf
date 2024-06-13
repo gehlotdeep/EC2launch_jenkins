@@ -103,25 +103,8 @@ resource "aws_instance" "my_instance" {
               EOF
 
 }
-/*
-# Data Sources
 
-data "aws_instance" "my_instance" {
-  instance_id = "i-053b9e760071535c5"
-  filter {
-    name   = "tag:Name"
-    values = ["Testing"]
-  }
 
-  depends_on = [
-    "aws_instance.my_instance"
-  ]
-}
-
-output "feteched_info_from_aws" {
-  value = data.aws_instance.my_instance.public_ip
-}
-*/
 # Null_resources 
 
 resource "null_resource" "my_instance" {
@@ -202,6 +185,7 @@ resource "aws_security_group" "my_security_group" {
   }
 }
 
+/*
 resource "aws_dynamodb_table" "example" {
   name           = var.table_name
   billing_mode   = var.billing_mode
@@ -226,3 +210,5 @@ resource "aws_dynamodb_table" "example" {
 
   tags = var.tag
 }
+*/
+
