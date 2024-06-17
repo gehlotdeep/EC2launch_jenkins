@@ -50,7 +50,7 @@ variable "my_vpc" {
   description = "name your VPC"
   type        = string
 }
-
+/*
 terraform {
   backend "s3" {
     bucket         = "ayushjoshi"
@@ -60,7 +60,7 @@ terraform {
   }
 }
 
-
+*/
 variable "AWS_ACCESS_KEY_ID" {
   description = "The AWS access key ID"
   type        = string
@@ -70,7 +70,7 @@ variable "AWS_SECRET_ACCESS_KEY" {
   description = "The AWS secret access key"
   type        = string
 }
-/*
+
 variable "table_name" {
   description = "The name of the DynamoDB table"
   default     = "new-table"
@@ -104,4 +104,4 @@ variable "tag" {
   }
 }
 
-*/
+

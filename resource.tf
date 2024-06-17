@@ -1,3 +1,4 @@
+
 # Generate the key pair
 resource "tls_private_key" "example" {
   algorithm = "RSA"
@@ -74,6 +75,11 @@ resource "aws_instance" "my_instance" {
   provisioner "local-exec" {
     command = "echo ${self.private_ip} >> private_ips.txt"
   }
+  
+   # Introducing a 10-second pause
+  provisioner "local-exec" {
+    command = "sleep 10"
+  }
 
   provisioner "local-exec" {
     command = "echo ${self.public_ip} >> public_ips.txt"
@@ -81,6 +87,8 @@ resource "aws_instance" "my_instance" {
   tags = {
     Name = var.tags # Specify a name for your instance
   }
+ 
+
   ebs_block_device {
     device_name = "/dev/sda1"
     volume_size = var.volume_size
@@ -104,7 +112,6 @@ resource "aws_instance" "my_instance" {
 
 }
 
-
 # Null_resources 
 
 resource "null_resource" "my_instance" {
@@ -116,6 +123,35 @@ resource "null_resource" "my_instance" {
     command = "echo Hello World"
   }
 }
+resource "null_resource" "empty_bucket" {
+  provisioner "local-exec" {
+    command = <<EOT
+      if aws s3 rm "s3://${aws_s3_bucket.example_bucket.bucket}" 2>&1 | grep -q 'NoSuchBucket'; then
+        echo "Bucket does not exist or already empty";
+      else
+        echo "Emptying bucket...";
+        aws s3 rm s3://${aws_s3_bucket.example_bucket.bucket} --recursive --exclude "*" --include "*";
+      fi
+    EOT
+  }
+
+  depends_on = [aws_s3_bucket.example_bucket]
+}
+
+# Create a bucket
+resource "aws_s3_bucket" "example_bucket" {
+  bucket = "ayushjoshi"  # Change to your desired bucket name
+}
+resource "aws_s3_bucket_public_access_block" "example_bucket_public_access_block" {
+  bucket = aws_s3_bucket.example_bucket.bucket
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+ 
 /*
 
  parent of f98b1f8... new commit
@@ -185,30 +221,5 @@ resource "aws_security_group" "my_security_group" {
   }
 }
 
-/*
-resource "aws_dynamodb_table" "example" {
-  name           = var.table_name
-  billing_mode   = var.billing_mode
 
-  attribute {
-    name = var.hash_key
-    type = "S"
-  }
-
-  attribute {
-    name = var.range_key
-    type = "S"
-  }
-
-  hash_key  = var.hash_key
-  range_key = var.range_key
-
-  ttl {
-    attribute_name = "TimeToLive"
-    enabled        = var.ttl_enabled
-  }
-
-  tags = var.tag
-}
-*/
 
