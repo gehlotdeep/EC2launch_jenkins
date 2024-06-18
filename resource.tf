@@ -126,7 +126,7 @@ resource "null_resource" "my_instance" {
 resource "null_resource" "empty_bucket" {
   provisioner "local-exec" {
     command = <<EOT
-      if aws s3 rm "s3://${aws_s3_bucket.example_bucket.bucket}" 2>&1 | grep -q 'NoSuchBucket'; then
+      if aws s3 ls "s3://${aws_s3_bucket.example_bucket.bucket}" 2>&1 | grep -q 'NoSuchBucket'; then
         echo "Bucket does not exist or already empty";
       else
         echo "Emptying bucket...";
