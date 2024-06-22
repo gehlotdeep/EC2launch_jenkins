@@ -69,8 +69,10 @@ resource "aws_instance" "my_instance" {
   ami                    = var.ami           # Specify the AMI ID of the instance
   instance_type          = var.instance_type # Specify the instance type
   key_name               = aws_key_pair.deployer.key_name
+  count 		 = var.ec2_count
   vpc_security_group_ids = [aws_security_group.my_security_group.id]
   subnet_id              = aws_subnet.public_subnet.id # Specify the subnet to launch the instance in
+
   # ...
   provisioner "local-exec" {
     command = "echo ${self.private_ip} >> private_ips.txt"

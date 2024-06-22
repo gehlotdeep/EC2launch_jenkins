@@ -1,10 +1,10 @@
 output "jenkins_url" {
-  value = "http://${aws_instance.my_instance.public_ip}:8080"
+  value = "http://${join(",", aws_instance.my_instance[*].public_ip)}:8080"
 }
 
 
 output "ec2_key" {
-  value = aws_instance.my_instance.key_name
+  value = aws_instance.my_instance[*].key_name
 }
 
 output "vpc_id" {
@@ -16,16 +16,16 @@ output "subnet_id" {
 }
 
 output "ami" {
-  value = aws_instance.my_instance.ami
+  value = aws_instance.my_instance[*].ami
 
 }
 
 output "instance_id" {
-  value = aws_instance.my_instance
+  value = aws_instance.my_instance[*].id
 }
 
 output "public_ip" {
-  value = aws_instance.my_instance.public_ip
+  value = aws_instance.my_instance[*].public_ip
 }
 
 output "private_key_pem" {
