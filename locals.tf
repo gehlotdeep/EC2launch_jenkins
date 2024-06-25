@@ -16,6 +16,10 @@ locals {
       description = "ingress rule for my_sql"
     },
     {
+      port        = 80
+      description = "port enable for nginx"
+    },
+    {
       port        = 8080
       description = "ingress rule for port 8080 using jenkins"
   }]
