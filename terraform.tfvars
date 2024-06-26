@@ -9,7 +9,7 @@ key_name          = "private"            # specify your desired key
 text1             = "locals-example"
 my_security_group = "my-security-group" # Please specify your security group by changing your own security group name
 my_vpc            = "VPC-1"
-AWS_ACCESS_KEY_ID     = "AKIA3FLD33HOY2QEXIMD"
-AWS_SECRET_ACCESS_KEY = "D4kRHpLynZOa9OOil2W2EtnHSKMe/qpWZfFdfZZs"
+AWS_ACCESS_KEY_ID     = ""
+AWS_SECRET_ACCESS_KEY = ""
 //instance_count     = 2
 
