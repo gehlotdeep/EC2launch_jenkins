@@ -125,27 +125,13 @@ resource "null_resource" "my_instance" {
     command = "echo Hello World"
   }
 }
-resource "null_resource" "empty_bucket" {
-  provisioner "local-exec" {
-    command = <<EOT
-      if aws s3 ls "s3://${aws_s3_bucket.example_bucket.bucket}" 2>&1 | grep -q 'NoSuchBucket'; then
-        echo "Bucket does not exist or already empty";
-      else
-        echo "Emptying bucket...";
-        aws s3 rm s3://${aws_s3_bucket.example_bucket.bucket} --recursive --exclude "*" --include "*";
-      fi
-    EOT
-  }
-
-  depends_on = [aws_s3_bucket.example_bucket]
-}
 
 # Create a bucket
-resource "aws_s3_bucket" "example_bucket" {
-  bucket = "ayushjoshi"  # Change to your desired bucket name
+resource "aws_s3_bucket" "my_bucket" {
+  bucket = "sdeepak21june"  # Change to your desired bucket name
 }
-resource "aws_s3_bucket_public_access_block" "example_bucket_public_access_block" {
-  bucket = aws_s3_bucket.example_bucket.bucket
+resource "aws_s3_bucket_public_access_block" "my_bucket_public_access_block" {
+  bucket = aws_s3_bucket.my_bucket.bucket
 
   block_public_acls       = false
   block_public_policy     = false

@@ -1,3 +1,4 @@
 #!/bin/bash
 *.terraform/
 *.private.pem
+*terraform.tfvars
