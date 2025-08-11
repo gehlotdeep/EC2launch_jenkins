@@ -104,8 +104,6 @@ variable "tag" {
   }
 }
 
-
-
 variable "ec2_count" {
 	description = "Number of EC2 instances to create"
 
