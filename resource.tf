@@ -14,7 +14,7 @@ resource "aws_key_pair" "deployer" {
 
 # Create VPC's
 resource "aws_vpc" "my_vpc" {
-  cidr_block           = "10.0.0.0/16" # CIDR block for your VPC
+  cidr_block           = var.cidr_block # CIDR block for your VPC
   enable_dns_hostnames = true          # Enable DNS hostnames for instances launched in this VPC
 
   tags = {
@@ -30,15 +30,20 @@ resource "aws_internet_gateway" "my_igw" {
 
 # Create Public Subnet
 resource "aws_subnet" "public_subnet" {
+  count                   = var.subnet_count
   vpc_id                  = aws_vpc.my_vpc.id # Reference the VPC created above
-  cidr_block              = "10.0.1.0/24"     # CIDR block for your subnet
-  map_public_ip_on_launch = true              # Automatically assign public IP addresses to instances in this subnet
-
-  availability_zone = var.availability_zone # Specify the desired availability zone for your subnet
+  cidr_block              = cidrsubnet(aws_vpc.my_vpc.cidr_block, 8, count.index)     # CIDR block for your more than one subnet
+  map_public_ip_on_launch = true             # Automatically assign public IP addresses to instances in this subnet
+  availability_zone = data.aws_availability_zones.available.names[count.index] # Specify the desired availability zone for your subnet
 
   tags = {
-    Name = "PublicSubnet" # Specify a name for your subnet
+    Name = "PublicSubnet-${count.index + 1}" # Specify a name for your subnet
   }
+}
+#recommended for auto-fetching AZs
+
+data "aws_availability_zones" "available" {
+  state = "available"
 }
 
 
@@ -60,9 +65,57 @@ resource "aws_route_table" "my_route_table" {
 
 # Associate Route Table with Public Subnet
 resource "aws_route_table_association" "public_subnet_association" {
-  subnet_id      = aws_subnet.public_subnet.id       # Associate with the public subnet
+  count = length(aws_subnet.public_subnet)
+  subnet_id = aws_subnet.public_subnet[0].id       # Associate with the public subnet
   route_table_id = aws_route_table.my_route_table.id # Associate with the route table
 }
+
+#Application ELB
+resource "aws_lb" "app_lb" {
+  name               = "my-app-lb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.my_security_group.id]
+  subnets = [for subnet in aws_subnet.public_subnet : subnet.id]
+}
+
+#Target Group
+resource "aws_lb_target_group" "app_tg" {
+  name     = "app-tg"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id = aws_vpc.my_vpc.id
+
+    health_check {
+    path                = "/"
+    protocol            = "HTTP"
+    port                = "traffic-port"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    matcher             = "200-399"
+  }
+
+}
+# Attach an EC2 instance to Target Group
+resource "aws_lb_target_group_attachment" "tg_attachment" {
+  target_group_arn = aws_lb_target_group.app_tg.arn
+  target_id        = aws_instance.my_instance[0].id
+  port             = 80
+}
+#AWS Listner
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_lb.app_lb.arn
+  port              = 80
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app_tg.arn
+  }
+}
+
 
 # Create EC2 Instance
 resource "aws_instance" "my_instance" {
@@ -71,7 +124,7 @@ resource "aws_instance" "my_instance" {
   key_name               = aws_key_pair.deployer.key_name
   count 		 = var.ec2_count
   vpc_security_group_ids = [aws_security_group.my_security_group.id]
-  subnet_id              = aws_subnet.public_subnet.id # Specify the subnet to launch the instance in
+  subnet_id = aws_subnet.public_subnet[0].id # Specify the subnet to launch the instance in
 
   # ...
   provisioner "local-exec" {
@@ -103,6 +156,7 @@ resource "aws_instance" "my_instance" {
               #!/bin/bash
               sudo apt-get update
               sudo apt-get install -y openjdk-17-jdk
+
               wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add - 
               sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
               sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5BA31D57EF5975CA

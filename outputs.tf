@@ -12,7 +12,7 @@ output "vpc_id" {
 }
 
 output "subnet_id" {
-  value = aws_route_table_association.public_subnet_association.subnet_id
+  value = aws_route_table_association.public_subnet_association[0].subnet_id
 }
 
 output "ami" {
@@ -31,6 +31,10 @@ output "public_ip" {
 output "private_key_pem" {
   value     = tls_private_key.example.private_key_pem
   sensitive = true
+}
+
+output "aws_lb" {
+  value = aws_subnet.public_subnet[0].id
 }
 /*
 output "dynamodb_table_name" {

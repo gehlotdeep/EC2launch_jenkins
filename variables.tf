@@ -24,8 +24,8 @@ variable "ami" {
 }
 
 variable "availability_zone" {
-  description = "your availability_zone"
-  type        = string
+  description = "List of availability zones to use"
+  type        = list(string)
 }
 
 variable "key_name" {
@@ -107,4 +107,11 @@ variable "tag" {
 variable "ec2_count" {
 	description = "Number of EC2 instances to create"
 
+}
+variable "subnet_count" {
+  description = "number of subnet count to create more than one subnet"
+}
+
+variable "cidr_block" {
+  description = "number of subnet"
 }
