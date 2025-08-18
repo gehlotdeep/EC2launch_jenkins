@@ -53,7 +53,6 @@ resource "aws_route_table" "my_route_table" {
 
   route {
     cidr_block = "0.0.0.0/0" # Route all traffic
-
     gateway_id = aws_internet_gateway.my_igw.id # Route traffic to the Internet Gateway
   }
 
@@ -66,7 +65,7 @@ resource "aws_route_table" "my_route_table" {
 # Associate Route Table with Public Subnet
 resource "aws_route_table_association" "public_subnet_association" {
   count = length(aws_subnet.public_subnet)
-  subnet_id = aws_subnet.public_subnet[0].id       # Associate with the public subnet
+  subnet_id = aws_subnet.public_subnet[count.index].id       # Associate with the public subnet
   route_table_id = aws_route_table.my_route_table.id # Associate with the route table
 }
 
