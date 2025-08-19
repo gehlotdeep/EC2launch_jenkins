@@ -65,7 +65,7 @@ resource "aws_route_table" "my_route_table" {
 # Associate Route Table with Public Subnet
 resource "aws_route_table_association" "public_subnet_association" {
   count = length(aws_subnet.public_subnet)
-  subnet_id = aws_subnet.public_subnet[count.index].id       # Associate with the public subnet
+  subnet_id = element(aws_subnet.public_subnet[*].id, count.index)       # Associate with the public subnet
   route_table_id = aws_route_table.my_route_table.id # Associate with the route table
 }
 
@@ -126,7 +126,7 @@ resource "aws_instance" "my_instance" {
   key_name               = aws_key_pair.deployer.key_name
   count 		 = var.ec2_count
   vpc_security_group_ids = [aws_security_group.my_security_group.id]
-  subnet_id = aws_subnet.public_subnet[0].id # Specify the subnet to launch the instance in
+  subnet_id = element(aws_subnet.public_subnet[*].id, count.index) # Specify the subnet to launch the instance in
 
   # ...
   provisioner "local-exec" {
