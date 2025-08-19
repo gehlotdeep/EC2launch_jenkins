@@ -15,7 +15,11 @@ variable "region" {
 
 variable "tags" {
   description = "Describe your ec2 instance name"
-  type        = string
+  type        = map(string)
+  default = {
+    Environment = "dev"
+    Name = "web"
+  }
 }
 
 variable "ami" {
@@ -116,4 +120,8 @@ variable "subnet_count" {
 
 variable "cidr_block" {
   description = "number of subnet"
+}
+
+variable "instance_count" {
+  description = "Number of Instance"
 }

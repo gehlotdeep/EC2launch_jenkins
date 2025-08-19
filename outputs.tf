@@ -36,6 +36,9 @@ output "private_key_pem" {
 output "aws_lb" {
   value = aws_subnet.public_subnet[0].id
 }
+output "target_id" {
+  value = aws_instance.my_instance[*].id
+}
 /*
 output "dynamodb_table_name" {
   value = aws_dynamodb_table.example.name

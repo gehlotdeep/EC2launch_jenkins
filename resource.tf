@@ -37,7 +37,7 @@ resource "aws_subnet" "public_subnet" {
   availability_zone = data.aws_availability_zones.available.names[count.index] # Specify the desired availability zone for your subnet
 
   tags = {
-    Name = "PublicSubnet-${count.index + 1}" # Specify a name for your subnet
+    Name = "Public-Subnet-${count.index + 1}" # Specify a name for your subnet
   }
 }
 #recommended for auto-fetching AZs
@@ -57,7 +57,7 @@ resource "aws_route_table" "my_route_table" {
   }
 
   tags = {
-    Name = "MyRouteTable" # Specify a name for your route table
+    Name = "My-Route-Table" # Specify a name for your route table
   }
 }
 
@@ -84,6 +84,7 @@ resource "aws_lb_target_group" "app_tg" {
   port     = 80
   protocol = "HTTP"
   vpc_id = aws_vpc.my_vpc.id
+  
 
     health_check {
     path                = "/"
@@ -97,8 +98,10 @@ resource "aws_lb_target_group" "app_tg" {
   }
 
 }
+
 # Attach an EC2 instance to Target Group
 resource "aws_lb_target_group_attachment" "tg_attachment" {
+  count            = length(aws_instance.my_instance)
   target_group_arn = aws_lb_target_group.app_tg.arn
   target_id        = aws_instance.my_instance[0].id
   port             = 80
@@ -139,7 +142,7 @@ resource "aws_instance" "my_instance" {
     command = "echo ${self.public_ip} >> public_ips.txt"
   }
   tags = {
-    Name = var.tags # Specify a name for your instance
+    Name = "server-${count.index + 1}" # Specify a name for your instance
   }
  
 
