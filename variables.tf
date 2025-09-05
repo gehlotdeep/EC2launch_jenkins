@@ -112,6 +112,7 @@ variable "tag" {
 
 variable "ec2_count" {
 	description = "Number of EC2 instances to create"
+  //default = string
 
 }
 variable "subnet_count" {
@@ -122,6 +123,4 @@ variable "cidr_block" {
   description = "number of subnet"
 }
 
-variable "instance_count" {
-  description = "Number of Instance"
-}
+
