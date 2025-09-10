@@ -182,6 +182,7 @@ resource "null_resource" "my_instance" {
   }
 }
 
+
 # Create a bucket
 resource "aws_s3_bucket" "my_bucket" {
   bucket = "sdeepak21june"  # Change to your desired bucket name
@@ -195,46 +196,6 @@ resource "aws_s3_bucket_public_access_block" "my_bucket_public_access_block" {
   restrict_public_buckets = false
 }
 
- 
-/*
-
- parent of f98b1f8... new commit
-resource "aws_security_group" "my_security_group" {
-  vpc_id = aws_vpc.my_vpc.id
-  name        = "my-security-group"
-  description = "My security group created by Terraform"
-  # Ingress rules (inbound traffic rules)
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allow SSH access from anywhere (be cautious with this rule)
-  }
-
-  ingress {
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allow HTTP access from anywhere (be cautious with this rule)
-  }
-
-  # Egress rules (outbound traffic rules)
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1" # Allow all outbound traffic (you can restrict this as needed)
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-*/
 resource "aws_security_group" "my_security_group" {
   vpc_id      = aws_vpc.my_vpc.id
   name        = var.my_security_group
