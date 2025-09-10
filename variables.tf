@@ -65,21 +65,6 @@ terraform {
 }
 
 */
-variable "AWS_ACCESS_KEY_ID" {
-  description = "The AWS access key ID"
-  type        = string
-}
-
-variable "AWS_SECRET_ACCESS_KEY" {
-  description = "The AWS secret access key"
-  type        = string
-}
-
-variable "table_name" {
-  description = "The name of the DynamoDB table"
-  default     = "new-table"
-}
-
 variable "billing_mode" {
   description = "The billing mode for the DynamoDB table"
   default     = "PAY_PER_REQUEST"
@@ -124,3 +109,12 @@ variable "cidr_block" {
 }
 
 
+variable "AWS_ACCESS_KEY_ID" {
+  type        = string
+  description = "Access key calling from provider"
+}
+
+variable "AWS_SECRET_ACCESS_KEY" {
+  type        = string
+  description = "Secret access key calling from provider"
+}
