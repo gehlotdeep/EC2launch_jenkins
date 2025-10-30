@@ -118,3 +118,13 @@ variable "AWS_SECRET_ACCESS_KEY" {
   type        = string
   description = "Secret access key calling from provider"
 }
+
+variable "load-balancer" {
+  type = string
+  description = "Name of application load balancer"
+}
+
+variable "target-group" {
+  type = string
+  description = "Name of target group"
+}

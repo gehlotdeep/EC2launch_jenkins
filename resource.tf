@@ -22,7 +22,48 @@ resource "aws_vpc" "my_vpc" {
   }
 }
 
+#Create CloudWatch Alarm CPUutilization
+resource "aws_cloudwatch_dashboard" "main" {
+  dashboard_name = "my-dashboard"
 
+  dashboard_body = jsonencode({
+    widgets = [
+      {
+        type   = "metric"
+        x      = 0
+        y      = 0
+        width  = 12
+        height = 6
+
+        properties = {
+          metrics = [
+            [
+              "AWS/EC2",
+              "CPUUtilization",
+              "InstanceId",
+              aws_instance.my_instance[0].id
+            ]
+          ]
+          period = 300
+          stat   = "Average"
+          region = var.region
+          title  = "EC2 Instance CPU"
+        }
+      },
+      {
+        type   = "text"
+        x      = 0
+        y      = 7
+        width  = 3
+        height = 3
+
+        properties = {
+          markdown = "Hello world"
+        }
+      }
+    ]
+  })
+}
 # Create Internet Gateway
 resource "aws_internet_gateway" "my_igw" {
   vpc_id = aws_vpc.my_vpc.id # Attach the Internet Gateway to the VPC
@@ -71,7 +112,7 @@ resource "aws_route_table_association" "public_subnet_association" {
 
 #Application ELB
 resource "aws_lb" "app_lb" {
-  name               = "my-app-lb"
+  name               = var.load-balancer
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.my_security_group.id]
@@ -80,7 +121,7 @@ resource "aws_lb" "app_lb" {
 
 #Target Group
 resource "aws_lb_target_group" "app_tg" {
-  name     = "app-tg"
+  name     = var.target-group
   port     = 80
   protocol = "HTTP"
   vpc_id = aws_vpc.my_vpc.id
@@ -124,13 +165,13 @@ resource "aws_instance" "my_instance" {
   ami                    = var.ami           # Specify the AMI ID of the instance
   instance_type          = var.instance_type # Specify the instance type
   key_name               = aws_key_pair.deployer.key_name
-  count 		 = var.ec2_count
+  count 		         = var.ec2_count
   vpc_security_group_ids = [aws_security_group.my_security_group.id]
-  subnet_id = element(aws_subnet.public_subnet[*].id, count.index) # Specify the subnet to launch the instance in
+  subnet_id              = element(aws_subnet.public_subnet[*].id, count.index) # Specify the subnet to launch the instance in
 
   # ...
   provisioner "local-exec" {
-    command = "echo ${self.private_ip} >> private_ips.txt"
+    command              = "echo ${self.private_ip} >> private_ips.txt"
   }
   
    # Introducing a 10-second pause
